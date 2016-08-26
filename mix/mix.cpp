@@ -26,11 +26,11 @@ __inline long long getSystemTime() {
 
 
 size_t filesize(ifstream & iif) {
-	size_t b   = iif.tellg();
+	streampos b   = iif.tellg();
 	iif.seekg(0, ios_base::end);
-	size_t fno = iif.tellg();
+	streampos fno = iif.tellg();
 	iif.seekg(0, ios_base::beg);
-	return fno - b;
+	return static_cast<size_t>(fno - b);
 }
 
 int main() {
@@ -54,16 +54,16 @@ int main() {
 	ifo2 >> cm2;
 	ifo2.close();
 
-	//ifstream ifo21;
-	//ifo21.open("d:/21.wav", std::ios_base::binary | ios_base::in);
-	//to = filesize(ifo21) - 44;
-	//CubeManger cm21(to);
-	//ifo21.read(b, 44);
-	//ifo21 >> cm21;
-	//ifo21.close();
+	ifstream ifo21;
+	ifo21.open("d:/21.wav", std::ios_base::binary | ios_base::in);
+	to = filesize(ifo21) - 44;
+	CubeManger cm21(to);
+	ifo21.read(b, 44);
+	ifo21 >> cm21;
+	ifo21.close();
 
 	MixCube mc;
-	mc << cm << cm2;// << cm21;
+	mc << cm << cm2 << cm21;
 	ofstream of;
 	of.open("d:/cube.txt.wav", std::ios_base::binary);
 	of.write(bc, 44);

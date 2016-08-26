@@ -22,46 +22,44 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 	size_t maxv = std::max((*_cube).bytes(), _cm.bytes());
 	size_t minv = std::min((*_cube).bytes(), _cm.bytes());
 	CubeManger temp(maxv, _cm._sample);
-	size_t i = 0;
+	CubeManger * maxcude = 0;
+	CubeManger * mincude = 0;
 	if (minv == (*_cube).bytes()) {
-		for (; i < (*_cube).count(); i++) {
-			Cube * cu = _cm[i];
-			Cube * cp = (*_cube)[i];
-			Cube * ct = temp[i];
-			//memcpy(ct->data, cp->data, cp->count);
-			ct->count = cp->count;
-			for (size_t step = 0; step < cp->count; step++) {
-				char chu = *(cu->data + step);
-				char chp = *(cp->data + step);
-				*(ct->data + step) = (chu + chp) / 2;
-			}
-		}
-		for (; i < _cm.count(); i++) {
-			Cube * cu = _cm[i];
-			Cube * ct = temp[i];
-			memcpy(ct->data, cu->data, cu->count);
-			ct->count = cu->count;
-		}
+		maxcude = &_cm;
+		mincude = _cube;
 	}else if (minv == _cm.bytes()) {
-		for (; i < _cm.count(); i++) {
-			Cube * cu = _cm[i];
-			Cube * cp = (*_cube)[i];
-			Cube * ct = temp[i];
-			//memcpy(ct->data, cp->data, cp->count);
-			ct->count = cp->count;
-			for (size_t step = 0; step < cu->count; step++) {
-				char chu = *(cu->data + step);
-				char chp = *(cp->data + step);
-				*(ct->data + step) = (chu + chp) / 2;
+		maxcude = _cube;
+		mincude = &_cm;
+	}
+	size_t i = 0;
+	for (; i < (*mincude).count(); i++) {
+		Cube * cu = _cm[i];
+		Cube * cp = (*_cube)[i];
+		Cube * ct = temp[i];
+		//memcpy(ct->data, cp->data, cp->count);
+		ct->count = cp->count;
+		for (size_t step = 0; step < cp->count; step+=1) {
+			char chu = (short)*(cu->data + step);
+			char chp = (short)*(cp->data + step);
+#ifdef _MIX_LINE_ARG
+			/*叠加后求均值*/
+			*(ct->data + step) =(chu + chp)/2;
+#else ifdef _MIX_NEWLC_KVG
+			if( (chu < 0)&&(chp < 0) ){
+				*(ct->data + step) = (chu + chp) -(chu*chp / -(pow(2,8 - 1) - 1));
+			}else {
+				*(ct->data + step) = (chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1));
 			}
-		}
-		for (; i < (*_cube).count(); i++) {
-			Cube * cp = (*_cube)[i];
-			Cube * ct = temp[i];
-			memcpy(ct->data, cp->data, cp->count);
-			ct->count = cp->count;
+#endif
 		}
 	}
+	for (; i < (*maxcude).count(); i++) {
+		Cube * mcu = (*maxcude)[i];
+		Cube * ct  = temp[i];
+		memcpy(ct->data, mcu->data, mcu->count);
+		ct->count = mcu->count;
+	}
+
 	_cube = new CubeManger(temp);
 	return *this;
 }

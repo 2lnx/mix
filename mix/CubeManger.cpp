@@ -20,17 +20,18 @@ CubeManger::CubeManger(size_t total, size_t sample) :_cube(0), _bytes(total), _s
 	_cube = new Cube[cut];
 
 	size_t i = 0;
-	for (; i < _count - 1; i++) {
+	for (; i < _count; i++) {
+	//for (; i < _count-1; i++) {
 		Cube * cu = (*this)[i];
 		cu->data = new byte[sample];
 		memset(cu->data, 0, sample);
 		cu->count = sample;
 	}
 
-	Cube * cu = (*this)[i];
-	cu->data = new byte[cup];
-	memset(cu->data, 0, cup);
-	cu->count = cup;
+	//Cube * cu = (*this)[i];
+	//cu->data = new byte[cup];
+	//memset(cu->data, 0, cup);
+	//cu->count = cup;
 }
 Cube* CubeManger::operator[](size_t i) {
 	if ((i < 0) || (i >= _count)) {
