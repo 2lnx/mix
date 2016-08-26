@@ -8,8 +8,8 @@ CubeManger::CubeManger(size_t total, size_t sample) :_cube(0), _bytes(total), _s
 	if (total == 0) {
 		return;
 	}
-	int cut = total / sample;
-	int cup = total % sample;
+	size_t cut = total / sample;
+	size_t cup = total % sample;
 	if (cup > 0) {
 		cut += 1;
 	}else {
