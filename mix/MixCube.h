@@ -25,10 +25,17 @@ private:
 
 public:
 	MixCube();
-
-	MixCube& operator << (CubeManger & _cm);
 	~MixCube();
-	friend std::ostream&  operator << (std::ostream & out, MixCube& cube);
+	/**
+	* 混合入口
+	*/
+	MixCube& operator << (CubeManger & _cm);
+	/**
+	* 混合音频输出
+	*/
+	MixCube& operator >> (CubeManger & _cm);
+
+	friend std::ostream& operator << (std::ostream & out, MixCube& cube);
 	friend std::istream& operator >> (std::istream & ino, MixCube& cube);
 };
 

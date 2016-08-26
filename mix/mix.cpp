@@ -2,28 +2,20 @@
 //
 
 #include "stdafx.h"
-//#include <cmath>
-//#include <stdio.h>
-//#include <boost\filesystem.hpp>
 
-#include <iostream>
-#include <fstream>
 #include <time.h>
+#include <fstream>
+#include <iostream>
 using namespace std;
-
-#include <sys/timeb.h>
-
-//#include <Windows.h>
 
 #include "MixCube.h"
 
+#include <sys/timeb.h>
 __inline long long getSystemTime() {
 	struct timeb t;
 	ftime(&t);
 	return 1000 * t.time + t.millitm;
 }
-
-
 
 size_t filesize(ifstream & iif) {
 	streampos b   = iif.tellg();

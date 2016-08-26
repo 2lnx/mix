@@ -36,7 +36,6 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 		Cube * cu = _cm[i];
 		Cube * cp = (*_cube)[i];
 		Cube * ct = temp[i];
-		//memcpy(ct->data, cp->data, cp->count);
 		ct->count = cp->count;
 		for (size_t step = 0; step < cp->count; step+=1) {
 			char chu = (short)*(cu->data + step);
@@ -46,9 +45,9 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 			*(ct->data + step) =(chu + chp)/2;
 #else ifdef _MIX_NEWLC_KVG
 			if( (chu < 0)&&(chp < 0) ){
-				*(ct->data + step) = (chu + chp) -(chu*chp / -(pow(2,8 - 1) - 1));
+				*(ct->data + step) = byte((chu + chp) -(chu*chp / -(pow(2,8 - 1) - 1)));
 			}else {
-				*(ct->data + step) = (chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1));
+				*(ct->data + step) = byte((chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1)));
 			}
 #endif
 		}
@@ -63,19 +62,31 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 	_cube = new CubeManger(temp);
 	return *this;
 }
+
+
+MixCube& MixCube::operator >> (CubeManger & _cm) {
+	_cm = CubeManger(*(this->_cube));
+	return *this;
+}
+
 MixCube::~MixCube() {
 	if (_cube != 0) {
 		delete _cube;
 	}
 	_cube = NULL;
 }
+
 std::ostream& operator << (std::ostream & out, MixCube& cube) {
-	out << *(cube._cube);
+	if (cube._cube != NULL) {
+		out << *(cube._cube);
+	}
 	return out;
 }
 
 std::istream& operator >> (std::istream & ino, MixCube& cube) {
-	ino >> *(cube._cube);
+	if (cube._cube != NULL) {
+		ino >> *(cube._cube);
+	}
 	return ino;
 }
 
