@@ -57,7 +57,7 @@ CubeManger::CubeManger(CubeManger& _cm) :CubeManger(_cm._bytes, _cm._sample) {
 }
 
 CubeManger::~CubeManger() {
-	if ((_cube == NULL) || (_count != 0)) {
+	if ((_cube == NULL) || (_count == 0)) {
 		_count = 0;
 		_cube = 0;
 		return;

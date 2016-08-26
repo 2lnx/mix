@@ -30,32 +30,36 @@ int main() {
 	long long t1 = getSystemTime();
 	char b[44] = { 0 };
 	char bc[44] = { 0 };
-	ifstream ifo;
-	ifo.open("d:/1.wav", std::ios_base::binary | ios_base::in);
-	size_t to = filesize(ifo) - 44;
-	CubeManger cm(to);
-	ifo.read(bc,44);
-	ifo >> cm;
-	ifo.close();
 
-	ifstream ifo2;
-	ifo2.open("d:/2.wav", std::ios_base::binary | ios_base::in);
-	to = filesize(ifo2) - 44;
-	CubeManger cm2(to);
-	ifo2.read(b,44);
-	ifo2 >> cm2;
-	ifo2.close();
-
-	ifstream ifo21;
-	ifo21.open("d:/21.wav", std::ios_base::binary | ios_base::in);
-	to = filesize(ifo21) - 44;
-	CubeManger cm21(to);
-	ifo21.read(b, 44);
-	ifo21 >> cm21;
-	ifo21.close();
 
 	MixCube mc;
-	mc << cm << cm2 << cm21;
+	{
+		ifstream ifo;
+		ifo.open("d:/1.wav", std::ios_base::binary | ios_base::in);
+		size_t to = filesize(ifo) - 44;
+		CubeManger cm(to);
+		ifo.read(bc,44);
+		ifo >> cm;
+		ifo.close();
+
+		ifstream ifo2;
+		ifo2.open("d:/2.wav", std::ios_base::binary | ios_base::in);
+		to = filesize(ifo2) - 44;
+		CubeManger cm2(to);
+		ifo2.read(b,44);
+		ifo2 >> cm2;
+		ifo2.close();
+
+		ifstream ifo21;
+		ifo21.open("d:/21.wav", std::ios_base::binary | ios_base::in);
+		to = filesize(ifo21) - 44;
+		CubeManger cm21(to);
+		ifo21.read(b, 44);
+		ifo21 >> cm21;
+		ifo21.close();
+		mc <<cm  << cm2 << cm21;
+
+	}
 	ofstream of;
 	of.open("d:/cube.txt.wav", std::ios_base::binary);
 	of.write(bc, 44);

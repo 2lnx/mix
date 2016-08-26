@@ -58,7 +58,9 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 		memcpy(ct->data, mcu->data, mcu->count);
 		ct->count = mcu->count;
 	}
-
+	if(_cube != NULL){
+		delete _cube;
+	}
 	_cube = new CubeManger(temp);
 	return *this;
 }
