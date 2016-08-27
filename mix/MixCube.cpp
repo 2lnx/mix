@@ -146,8 +146,7 @@ inline size_t MixCube::MixWithCube(Cube&ct, Cube&cp) {
 #else ifdef _MIX_NEWLC_KVG
 		if ((chu < 0) && (chp < 0)) {
 			*(ct.data + i) = byte((chu + chp) - (chu*chp / -(pow(2, 8 - 1) - 1)));
-		}
-		else {
+		}else {
 			*(ct.data + i) = byte((chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1)));
 		}
 #endif
