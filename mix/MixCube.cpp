@@ -20,7 +20,7 @@ bool MixCube::MixSelf(CubeManger & _cm) {
 	if (_cube->bytes() < _cm.bytes()) {
 		return false;
 	}
-	return ( this->Mix(*(this->_cube), _cm) == this->_cube->bytes() );
+	return (MixCube::Mix(*(this->_cube), _cm) == this->_cube->bytes() );
 }
 
 size_t MixCube::Mix(CubeManger&left, CubeManger & right) {
@@ -33,10 +33,11 @@ size_t MixCube::Mix(CubeManger&left, CubeManger & right) {
 	for (size_t i = 0; i < right.count(); i++) {
 		Cube *ct = left[i];
 		Cube *cp = right[i];
-		this->MixWithCube(*ct, *cp);
+		MixCube::MixWithCube(*ct, *cp);
 	}
 	return left.bytes();
 }
+
 inline size_t MixCube::MixWithCube(Cube&ct, Cube&cp) {
 	for (size_t i = 0; i < cp.count; i++) {
 		char chu = (short)*(ct.data + i);
@@ -77,7 +78,6 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 	}
 	return *this;
 }
-
 
 MixCube& MixCube::operator >> (CubeManger & _cm) {
 	_cm = CubeManger(*(this->_cube));
