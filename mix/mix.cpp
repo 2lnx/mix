@@ -28,7 +28,7 @@ size_t filesize(ifstream & iif) {
 	return static_cast<size_t>(fno - b);
 }
 
-int main() {
+int mainv() {
 
 	long long t1 = getSystemTime();
 	char b[44] = { 0 };
@@ -87,5 +87,13 @@ int main() {
 	//
 	long long t2 = getSystemTime();
 	cout << t2 - t1 << endl;
+	_sleep(5000);
+	return 0;
+}
+
+#include <thread>
+int main() {
+	std::thread th(mainv);
+	th.join();
 	return 0;
 }

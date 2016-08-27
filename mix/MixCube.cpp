@@ -9,8 +9,66 @@
 #define NULL 0
 #endif // ! NULL
 
+#ifndef BOX_COUNT
+#define BOX_COUNT 2
+#endif // BOX_COUNT
+
+class CubeBox {
+private:
+	int _count;
+	Cube* _cube[2];
+
+public:
+	CubeBox():_count(0){
+		_cube[0] = 0;
+		_cube[1] = 0;
+	}
+
+	CubeBox(int _c,Cube *_left,Cube*_right):_count(_c){
+		if ( (_count == 0)||(_left == 0)|| (_right == 0) ){
+			_cube[0] = 0;
+			_cube[1] = 0;
+			return;
+		}
+		_cube[0] = _left;
+		_cube[1] = _right;
+	}
+
+	int count() const {
+		return _count;
+	}
+
+	inline Cube* operator[](int i) {
+		if (i < 0) {
+			return NULL;
+		}
+		if (i >= 2) {
+			return NULL;
+		}
+		if (_cube == 0) {
+			return NULL;
+		}
+		return _cube[i];
+	}
+};
+
+#include <Windows.h>
+
+DWORD WINAPI MixXThread(LPVOID arg) {
+	CubeBox * box = (CubeBox*)arg;
+	if (box == NULL) {
+		return 0;
+	}
+	for (int i = 0; i < box->count(); i++) {
+		Cube* left  = (*box)[0];
+		Cube* right = (*box)[1];
+		MixCube::MixWithCube(*(left + i), *(right + i));
+	}
+	return 0;
+}
 
 MixCube::MixCube() :_cube(0) {
+
 }
 
 bool MixCube::MixSelf(CubeManger & _cm) {
@@ -20,9 +78,45 @@ bool MixCube::MixSelf(CubeManger & _cm) {
 	if (_cube->bytes() < _cm.bytes()) {
 		return false;
 	}
-	return (MixCube::Mix(*(this->_cube), _cm) == this->_cube->bytes() );
+	return (MixCube::MutilMix(*(this->_cube), _cm) == this->_cube->bytes() );
 }
 
+/**
+* 启用多线程处理混合cube
+**/
+size_t MixCube::MutilMix(CubeManger &left, CubeManger &right) {
+	if (right.bytes() <= 0) {
+		return 0;
+	}
+	if ( left.bytes() < right.bytes() ) {
+		return -1;
+	}
+
+	const int clips = 12;
+
+	int cup = right.count() / clips;
+	int mod = right.count() % clips;
+
+	DWORD idThread[clips];
+	HANDLE handle[clips];
+
+	for (int i = 0; i < clips; i++) {
+		int xco = cup + ( (i == (clips)) ? mod : 0);
+		CubeBox * box = new CubeBox(xco,left[i * cup],right[i * cup]);
+		handle[i] = ::CreateThread(NULL, 0, MixXThread, box, 0, &idThread[i]);
+	}
+	WaitForMultipleObjects(clips, handle, true, INFINITE);
+	for (int i = 0; i < clips; i++) {
+		CloseHandle(handle[i]);
+	}
+
+	return right.bytes();
+}
+
+
+/**
+* 使用顺序处理混合cube
+**/
 size_t MixCube::Mix(CubeManger&left, CubeManger & right) {
 	if (right.bytes() <= 0) {
 		return 0;
@@ -63,7 +157,7 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 		_cube->copy(_cm);
 		return *this;
 	}
-	size_t maxv = std::max((*_cube).bytes(), _cm.bytes());
+	size_t maxv = max((*_cube).bytes(), _cm.bytes());
 	if( maxv > _cube->bytes() ){
 		CubeManger * old = _cube;
 		_cube = new CubeManger(maxv, _cm._sample);

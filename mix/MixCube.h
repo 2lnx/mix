@@ -33,10 +33,11 @@ private:
 	*/
 	bool MixSelf(CubeManger & _cm);
 
-	static size_t Mix(CubeManger&left,CubeManger & right);
-	static inline size_t MixWithCube(Cube&ct, Cube&cp);
 
 public:
+	static size_t MutilMix(CubeManger &left, CubeManger &right);
+	static size_t Mix(CubeManger&left,CubeManger & right);
+	static inline size_t MixWithCube(Cube&ct, Cube&cp);
 	/**
 	* »ìºÏÈë¿Ú
 	*/
