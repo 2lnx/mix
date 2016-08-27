@@ -11,6 +11,8 @@ using namespace std;
 
 #include "MixCube.h"
 
+#include <boost\filesystem.hpp>
+
 #include <sys/timeb.h>
 __inline long long getSystemTime() {
 	struct timeb t;
