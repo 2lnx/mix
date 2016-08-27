@@ -13,6 +13,10 @@
 #define BOX_COUNT 2
 #endif // BOX_COUNT
 
+
+/**
+* 多线程传递载体类
+**/
 class CubeBox {
 private:
 	int _count;
@@ -34,10 +38,6 @@ public:
 		_cube[1] = _right;
 	}
 
-	int count() const {
-		return _count;
-	}
-
 	inline Cube* operator[](int i) {
 		if (i < 0) {
 			return NULL;
@@ -49,6 +49,10 @@ public:
 			return NULL;
 		}
 		return _cube[i];
+	}
+
+	int count() const {
+		return _count;
 	}
 };
 
