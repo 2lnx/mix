@@ -6,6 +6,7 @@
 #include <time.h>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 #include "MixCube.h"
@@ -32,33 +33,49 @@ int main() {
 	char bc[44] = { 0 };
 
 
+	size_t to = 0;
 	MixCube mc;
 	{
 		ifstream ifo;
 		ifo.open("d:/1.wav", std::ios_base::binary | ios_base::in);
-		size_t to = filesize(ifo) - 44;
-		CubeManger cm(to);
-		ifo.read(bc,44);
+		size_t t = filesize(ifo) - 44;
+		CubeManger cm(t);
+		ifo.read(b, 44);
+		if (to < t) {
+			to = t;
+			memcpy(bc, b, 44);
+		}
 		ifo >> cm;
 		ifo.close();
-
+		mc << cm;
+	}
+	{
 		ifstream ifo2;
 		ifo2.open("d:/2.wav", std::ios_base::binary | ios_base::in);
-		to = filesize(ifo2) - 44;
-		CubeManger cm2(to);
-		ifo2.read(b,44);
+		size_t t = filesize(ifo2) - 44;
+		CubeManger cm2(t);
+		ifo2.read(b, 44);
+		if (to < t) {
+			to = t;
+			memcpy(bc, b, 44);
+		}
 		ifo2 >> cm2;
 		ifo2.close();
-
+		mc << cm2;
+	}
+	{
 		ifstream ifo21;
-		ifo21.open("d:/21.wav", std::ios_base::binary | ios_base::in);
-		to = filesize(ifo21) - 44;
-		CubeManger cm21(to);
+		ifo21.open("d:/3.wav", std::ios_base::binary | ios_base::in);
+		size_t t = filesize(ifo21) - 44;
+		CubeManger cm21(t);
 		ifo21.read(b, 44);
+		if (to < t) {
+			to = t;
+			memcpy(bc, b, 44);
+		}
 		ifo21 >> cm21;
 		ifo21.close();
-		mc <<cm  << cm2 << cm21;
-
+		mc << cm21;
 	}
 	ofstream of;
 	of.open("d:/cube.txt.wav", std::ios_base::binary);

@@ -13,6 +13,49 @@
 MixCube::MixCube() :_cube(0) {
 }
 
+bool MixCube::MixSelf(CubeManger & _cm) {
+	if (_cube == NULL) {
+		return false;
+	}
+	if (_cube->bytes() < _cm.bytes()) {
+		return false;
+	}
+	return ( this->Mix(*(this->_cube), _cm) == this->_cube->bytes() );
+}
+
+size_t MixCube::Mix(CubeManger&left, CubeManger & right) {
+	if (right.bytes() <= 0) {
+		return 0;
+	}
+	if ( left.bytes() < right.bytes() ) {
+		return -1;
+	}
+	for (size_t i = 0; i < right.count(); i++) {
+		Cube *ct = left[i];
+		Cube *cp = right[i];
+		this->MixWithCube(*ct, *cp);
+	}
+	return left.bytes();
+}
+inline size_t MixCube::MixWithCube(Cube&ct, Cube&cp) {
+	for (size_t i = 0; i < cp.count; i++) {
+		char chu = (short)*(ct.data + i);
+		char chp = (short)*(cp.data + i);
+#ifdef _MIX_LINE_ARG
+		/*叠加后求均值*/
+		*(ct->data + step) = (chu + chp) / 2;
+#else ifdef _MIX_NEWLC_KVG
+		if ((chu < 0) && (chp < 0)) {
+			*(ct.data + i) = byte((chu + chp) - (chu*chp / -(pow(2, 8 - 1) - 1)));
+		}
+		else {
+			*(ct.data + i) = byte((chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1)));
+		}
+#endif
+	}
+	return cp.count;
+}
+
 MixCube& MixCube::operator << (CubeManger & _cm) {
 	if (_cube == NULL) {
 		_cube = new CubeManger(_cm);
@@ -20,48 +63,18 @@ MixCube& MixCube::operator << (CubeManger & _cm) {
 		return *this;
 	}
 	size_t maxv = std::max((*_cube).bytes(), _cm.bytes());
-	size_t minv = std::min((*_cube).bytes(), _cm.bytes());
-	CubeManger temp(maxv, _cm._sample);
-	CubeManger * maxcude = 0;
-	CubeManger * mincude = 0;
-	if (minv == (*_cube).bytes()) {
-		maxcude = &_cm;
-		mincude = _cube;
-	}else if (minv == _cm.bytes()) {
-		maxcude = _cube;
-		mincude = &_cm;
-	}
-	size_t i = 0;
-	for (; i < (*mincude).count(); i++) {
-		Cube * cu = _cm[i];
-		Cube * cp = (*_cube)[i];
-		Cube * ct = temp[i];
-		ct->count = cp->count;
-		for (size_t step = 0; step < cp->count; step+=1) {
-			char chu = (short)*(cu->data + step);
-			char chp = (short)*(cp->data + step);
-#ifdef _MIX_LINE_ARG
-			/*叠加后求均值*/
-			*(ct->data + step) =(chu + chp)/2;
-#else ifdef _MIX_NEWLC_KVG
-			if( (chu < 0)&&(chp < 0) ){
-				*(ct->data + step) = byte((chu + chp) -(chu*chp / -(pow(2,8 - 1) - 1)));
-			}else {
-				*(ct->data + step) = byte((chu + chp) - (chu*chp / (pow(2, 8 - 1) - 1)));
-			}
-#endif
+	if( maxv > _cube->bytes() ){
+		CubeManger * old = _cube;
+		_cube = new CubeManger(maxv, _cm._sample);
+		_cube->copy(*old);
+		if (old != NULL) {
+			delete old;
+			old = NULL;
 		}
 	}
-	for (; i < (*maxcude).count(); i++) {
-		Cube * mcu = (*maxcude)[i];
-		Cube * ct  = temp[i];
-		memcpy(ct->data, mcu->data, mcu->count);
-		ct->count = mcu->count;
+	if (this->MixSelf(_cm)) {
+		return *this;
 	}
-	if(_cube != NULL){
-		delete _cube;
-	}
-	_cube = new CubeManger(temp);
 	return *this;
 }
 

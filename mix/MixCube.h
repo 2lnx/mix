@@ -26,6 +26,14 @@ private:
 public:
 	MixCube();
 	~MixCube();
+
+	/**
+	* 与内置cube进行mix
+	*/
+	bool MixSelf(CubeManger & _cm);
+
+	 size_t Mix(CubeManger&left,CubeManger & right);
+	inline size_t MixWithCube(Cube&ct, Cube&cp);
 	/**
 	* 混合入口
 	*/
