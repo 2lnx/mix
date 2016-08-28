@@ -34,12 +34,16 @@ int main() {
 	char b[44] = { 0 };
 	char bc[44] = { 0 };
 
+	namespace fs = boost::filesystem;
+	fs::path oldp = fs::current_path();
+	fs::path newp("D:\\t\\");
+	fs::current_path(newp);
 
 	size_t to = 0;
 	MixCube mc;
 	{
 		ifstream ifo;
-		ifo.open("d:/1.wav", std::ios_base::binary | ios_base::in);
+		ifo.open("1.wav", std::ios_base::binary | ios_base::in);
 		size_t t = filesize(ifo) - 44;
 		CubeManger cm(t);
 		ifo.read(b, 44);
@@ -53,7 +57,7 @@ int main() {
 	}
 	{
 		ifstream ifo2;
-		ifo2.open("d:/2.wav", std::ios_base::binary | ios_base::in);
+		ifo2.open("2.wav", std::ios_base::binary | ios_base::in);
 		size_t t = filesize(ifo2) - 44;
 		CubeManger cm2(t);
 		ifo2.read(b, 44);
@@ -67,7 +71,7 @@ int main() {
 	}
 	{
 		ifstream ifo21;
-		ifo21.open("d:/3.wav", std::ios_base::binary | ios_base::in);
+		ifo21.open("3.wav", std::ios_base::binary | ios_base::in);
 		size_t t = filesize(ifo21) - 44;
 		CubeManger cm21(t);
 		ifo21.read(b, 44);
@@ -80,14 +84,15 @@ int main() {
 		mc << cm21;
 	}
 	ofstream of;
-	of.open("d:/cube.txt.wav", std::ios_base::binary);
+	of.open("cube.txt.wav", std::ios_base::binary);
 	of.write(bc, 44);
 	of << mc;
 	of.close();
 	//
 	long long t2 = getSystemTime();
 	cout << t2 - t1 << endl;
-//	_sleep(3000);
+	fs::current_path(oldp);
+	system("pause");
 	return 0;
 }
 //

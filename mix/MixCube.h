@@ -19,6 +19,14 @@
 #define _MIX_NEWLC_KVG
 #endif //!_MIX_NEWLC_KVG
 
+/** 启用多线程架构提升性能 */
+#ifndef _USING_MUTIL_MIX_
+#define _USING_MUTIL_MIX_
+#endif // !_USING_MUTIL_MIX_
+#ifndef _MAX_MUTIL_COUNT_
+#define _MAX_MUTIL_COUNT_ 16
+#endif
+
 class MixCube {
 private:
 	CubeManger *_cube;

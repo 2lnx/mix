@@ -68,6 +68,7 @@ DWORD WINAPI MixXThread(LPVOID arg) {
 		Cube* right = (*box)[1];
 		MixCube::MixWithCube(*(left + i), *(right + i));
 	}
+	delete box;
 	return 0;
 }
 
@@ -82,7 +83,11 @@ bool MixCube::MixSelf(CubeManger & _cm) {
 	if (_cube->bytes() < _cm.bytes()) {
 		return false;
 	}
+#ifdef _USING_MUTIL_MIX_
 	return (MixCube::MutilMix(*(this->_cube), _cm) == this->_cube->bytes() );
+#else
+	return (MixCube::Mix(*(this->_cube), _cm) == this->_cube->bytes());
+#endif
 }
 
 /**
@@ -96,9 +101,10 @@ size_t MixCube::MutilMix(CubeManger &left, CubeManger &right) {
 		return -1;
 	}
 
-	const int clips = 12;
+	// 数据最大分片数
+	const int clips = _MAX_MUTIL_COUNT_;
 
-	int cup = right.count() / clips;
+	int cup = int(right.count() / clips);
 	int mod = right.count() % clips;
 
 	DWORD idThread[clips];
