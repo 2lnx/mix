@@ -20,7 +20,7 @@
 class CubeBox {
 private:
 	int _count;
-	Cube* _cube[2];
+	Cube* _cube[BOX_COUNT];
 
 public:
 	CubeBox():_count(0){
@@ -42,7 +42,7 @@ public:
 		if (i < 0) {
 			return NULL;
 		}
-		if (i >= 2) {
+		if (i >= BOX_COUNT) {
 			return NULL;
 		}
 		if (_cube == 0) {
