@@ -30,14 +30,14 @@ size_t filesize(ifstream & iif) {
 
 int main() {
 
+	namespace fs = boost::filesystem;
+	fs::path oldp = fs::current_path();
+	fs::path newp("D:/mix");
+	fs::current_path(newp);
 	long long t1 = getSystemTime();
 	char b[44] = { 0 };
 	char bc[44] = { 0 };
 
-	namespace fs = boost::filesystem;
-	fs::path oldp = fs::current_path();
-	fs::path newp("D:\\t\\");
-	fs::current_path(newp);
 
 	size_t to = 0;
 	MixCube mc;

@@ -115,6 +115,14 @@ size_t MixCube::MutilMix(CubeManger &left, CubeManger &right) {
 		CubeBox * box = new CubeBox(xco,left[i * cup],right[i * cup]);
 		handle[i] = ::CreateThread(NULL, 0, MixXThread, box, 0, &idThread[i]);
 	}
+	//DWORD hIndex = 0;
+	//while (true) {
+	//	hIndex = WaitForMultipleObjects(clips, handle, false, INFINITE) - WAIT_OBJECT_0;
+	//	if (hIndex >= clips) {
+	//		break;
+	//	}
+	//	CloseHandle(handle[hIndex]);
+	//}
 	WaitForMultipleObjects(clips, handle, true, INFINITE);
 	for (int i = 0; i < clips; i++) {
 		CloseHandle(handle[i]);
