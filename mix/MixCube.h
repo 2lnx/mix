@@ -23,8 +23,9 @@
 #ifndef _USING_MUTIL_MIX_
 #define _USING_MUTIL_MIX_
 #endif // !_USING_MUTIL_MIX_
+
 #ifndef _MAX_MUTIL_COUNT_
-#define _MAX_MUTIL_COUNT_ 32
+#define _MAX_MUTIL_COUNT_ 24
 #endif
 
 class MixCube {
